@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyShare - Information Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --sky-blue: #e6f7ff;
+            --light-blue: #b3e0ff;
+            --medium-blue: #4fc3f7;
+            --dark-blue: #039be5;
+            --white: #ffffff;
+            --text-color: #333333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--sky-blue), #d6f0ff);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--medium-blue), var(--dark-blue));
+            color: white;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .admin-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px 5%;
+            gap: 25px;
+        }
+
+        /* Rules Panel */
+        .rules-panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .rules-panel h2 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rules-panel h2 i {
+            font-size: 1.5rem;
+        }
+
+        .rules-list {
+            list-style-type: none;
+            margin-bottom: 25px;
+        }
+
+        .rules-list li {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #f5fbff;
+            border-left: 4px solid var(--medium-blue);
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rules-list li i {
+            color: var(--dark-blue);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .rules-list li:hover i {
+            background-color: rgba(79, 195, 247, 0.2);
+        }
+
+        .edit-rules {
+            background-color: var(--dark-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .edit-rules:hover {
+            background-color: #0288d1;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0f2ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--medium-blue);
+        }
+
+        .search-box button {
+            background-color: var(--medium-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: var(--dark-blue);
+        }
+
+        /* Post Form */
+        .post-form {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-form h2 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0f2ff;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--medium-blue);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background-color: var(--medium-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--dark-blue);
+        }
+
+        /* Posts Display */
+        .posts-container {
+            background-color: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .posts-container h2 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post-card {
+            background-color: #f9fdff;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid var(--medium-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .post-date {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .post-description {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .share-btn {
+            background-color: #e3f2fd;
+            color: var(--dark-blue);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .share-btn:hover {
+            background-color: #bbdefb;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #b3e0ff;
+        }
+
+        /* Modal for editing rules */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--dark-blue);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .modal-body textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0f2ff;
+            border-radius: 10px;
+            min-height: 200px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .save-btn {
+            background-color: var(--dark-blue);
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .rules-panel, .content-area {
+                width: 100%;
+            }
+            
+            .post-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        /* Animation for new posts */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-cloud-sun"></i>
+            <span>SkyShare</span>
+        </div>
+        <div class="admin-badge">
+            <i class="fas fa-crown"></i>
+            <span>Host/Admin View</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Rules Panel -->
+        <div class="rules-panel">
+            <h2><i class="fas fa-gavel"></i> Community Rules</h2>
+            <ul class="rules-list" id="rulesList">
+                <li>Be respectful and kind to all members <i class="fas fa-edit edit-rule-btn"></i></li>
+                <li>Share accurate and verified information only <i class="fas fa-edit edit-rule-btn"></i></li>
+                <li>No spam or self-promotion without permission <i class="fas fa-edit edit-rule-btn"></i></li>
+                <li>Keep discussions relevant to the topic <i class="fas fa-edit edit-rule-btn"></i></li>
+                <li>Respect others' privacy and confidentiality <i class="fas fa-edit edit-rule-btn"></i></li>
+            </ul>
+            <button class="edit-rules" id="editRulesBtn">
+                <i class="fas fa-edit"></i> Edit Rules (Admin Only)
+            </button>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search for information posts...">
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Post Form -->
+            <div class="post-form">
+                <h2><i class="fas fa-pen-alt"></i> Share Information</h2>
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" placeholder="Enter a clear title for your information">
+                </div>
+                <div class="form-group">
+                    <label for="postDescription">Description</label>
+                    <textarea id="postDescription" placeholder="Share your information here..."></textarea>
+                </div>
+                <button class="submit-btn" id="submitPostBtn">
+                    <i class="fas fa-paper-plane"></i> Post Information
+                </button>
+            </div>
+
+            <!-- Posts Display -->
+            <div class="posts-container">
+                <h2><i class="fas fa-bullhorn"></i> Recent Information</h2>
+                <div class="posts-list" id="postsList">
+                    <!-- Posts will be dynamically added here -->
+                    <div class="post-card fade-in">
+                        <div class="post-header">
+                            <h3 class="post-title">Welcome to SkyShare!</h3>
+                            <div class="post-date">Today</div>
+                        </div>
+                        <p class="post-description">
+                            This is a community information sharing platform. Feel free to post relevant information, 
+                            ask questions, and share useful resources with others. Remember to follow the community rules!
+                        </p>
+                        <div class="post-actions">
+                            <button class="share-btn">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="post-card fade-in">
+                        <div class="post-header">
+                            <h3 class="post-title">Upcoming Community Event</h3>
+                            <div class="post-date">2 days ago</div>
+                        </div>
+                        <p class="post-description">
+                            Join us this Saturday for a virtual meetup where we'll discuss the latest trends in 
+                            information sharing technologies. All members are welcome!
+                        </p>
+                        <div class="post-actions">
+                            <button class="share-btn">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Rules Modal -->
+    <div class="modal" id="editRulesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Community Rules</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="rulesTextarea" placeholder="Enter rules, one per line..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" id="cancelEditBtn">Cancel</button>
+                <button class="modal-btn save-btn" id="saveRulesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>SkyShare Information Hub &copy; 2023 | Only host/admin can edit rules</p>
+    </footer>
+
+    <script>
+        // Sample initial posts
+        let posts = [
+            {
+                id: 1,
+                title: "Welcome to SkyShare!",
+                description: "This is a community information sharing platform. Feel free to post relevant information, ask questions, and share useful resources with others. Remember to follow the community rules!",
+                date: "Today"
+            },
+            {
+                id: 2,
+                title: "Upcoming Community Event",
+                description: "Join us this Saturday for a virtual meetup where we'll discuss the latest trends in information sharing technologies. All members are welcome!",
+                date: "2 days ago"
+            },
+            {
+                id: 3,
+                title: "Important Update: Server Maintenance",
+                description: "Please note that our servers will undergo maintenance this Friday from 2 AM to 4 AM. The service might be temporarily unavailable during this period.",
+                date: "3 days ago"
+            }
+        ];
+
+        // DOM Elements
+        const postsList = document.getElementById('postsList');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const postTitle = document.getElementById('postTitle');
+        const postDescription = document.getElementById('postDescription');
+        const submitPostBtn = document.getElementById('submitPostBtn');
+        const editRulesBtn = document.getElementById('editRulesBtn');
+        const editRulesModal = document.getElementById('editRulesModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const saveRulesBtn = document.getElementById('saveRulesBtn');
+        const rulesTextarea = document.getElementById('rulesTextarea');
+        const rulesList = document.getElementById('rulesList');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderPosts();
+            loadRules();
+        });
+
+        // Render posts to the page
+        function renderPosts(filteredPosts = posts) {
+            postsList.innerHTML = '';
+            
+            if (filteredPosts.length === 0) {
+                postsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No posts found</h3>
+                        <p>Try a different search or be the first to share information!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredPosts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card fade-in';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <h3 class="post-title">${post.title}</h3>
+                        <div class="post-date">${post.date}</div>
+                    </div>
+                    <p class="post-description">${post.description}</p>
+                    <div class="post-actions">
+                        <button class="share-btn" onclick="sharePost(${post.id})">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                `;
+                postsList.appendChild(postElement);
+            });
+        }
+
+        // Load rules from localStorage or use default
+        function loadRules() {
+            const savedRules = localStorage.getItem('skyShareRules');
+            if (savedRules) {
+                const rulesArray = JSON.parse(savedRules);
+                updateRulesDisplay(rulesArray);
+            }
+        }
+
+        // Update rules display
+        function updateRulesDisplay(rulesArray) {
+            rulesList.innerHTML = '';
+            rulesArray.forEach(rule => {
+                const ruleItem = document.createElement('li');
+                ruleItem.innerHTML = `${rule} <i class="fas fa-edit edit-rule-btn"></i>`;
+                rulesList.appendChild(ruleItem);
+            });
+        }
+
+        // Save rules to localStorage
+        function saveRules(rulesArray) {
+            localStorage.setItem('skyShareRules', JSON.stringify(rulesArray));
+            updateRulesDisplay(rulesArray);
+        }
+
+        // Add new post
+        submitPostBtn.addEventListener('click', function() {
+            const title = postTitle.value.trim();
+            const description = postDescription.value.trim();
+            
+            if (!title || !description) {
+                alert('Please fill in both title and description.');
+                return;
+            }
+            
+            const newPost = {
+                id: posts.length + 1,
+                title,
+                description,
+                date: 'Just now'
+            };
+            
+            posts.unshift(newPost);
+            renderPosts();
+            
+            // Clear form
+            postTitle.value = '';
+            postDescription.value = '';
+            
+            // Show confirmation
+            alert('Your information has been posted successfully!');
+        });
+
+        // Search functionality
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderPosts();
+                return;
+            }
+            
+            const filteredPosts = posts.filter(post => 
+                post.title.toLowerCase().includes(searchTerm) || 
+                post.description.toLowerCase().includes(searchTerm)
+            );
+            
+            renderPosts(filteredPosts);
+        }
+
+        // Share post functionality
+        function sharePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                // In a real application, this would use the Web Share API or similar
+                // For this demo, we'll just show an alert
+                alert(`Sharing: "${post.title}"\n\nYou can copy this link to share: \n\nhttps://skyshare.example.com/post/${postId}`);
+            }
+        }
+
+        // Edit rules functionality (admin only)
+        editRulesBtn.addEventListener('click', function() {
+            // In a real app, this would check for admin authentication
+            // For this demo, we'll show a password prompt
+            const password = prompt('Enter admin password to edit rules:');
+            
+            // Demo password: "admin123"
+            if (password === 'admin123') {
+                // Get current rules
+                const ruleItems = rulesList.querySelectorAll('li');
+                const currentRules = Array.from(ruleItems).map(item => 
+                    item.textContent.replace(' Edit', '').trim()
+                );
+                
+                rulesTextarea.value = currentRules.join('\n');
+                editRulesModal.style.display = 'flex';
+            } else if (password !== null) {
+                alert('Incorrect password. Only the host/admin can edit rules.');
+            }
+        });
+
+        // Close modal
+        closeModalBtn.addEventListener('click', function() {
+            editRulesModal.style.display = 'none';
+        });
+
+        cancelEditBtn.addEventListener('click', function() {
+            editRulesModal.style.display = 'none';
+        });
+
+        // Save rules
+        saveRulesBtn.addEventListener('click', function() {
+            const rulesText = rulesTextarea.value.trim();
+            if (!rulesText) {
+                alert('Rules cannot be empty.');
+                return;
+            }
+            
+            const rulesArray = rulesText.split('\n').filter(rule => rule.trim() !== '');
+            saveRules(rulesArray);
+            editRulesModal.style.display = 'none';
+            alert('Rules updated successfully!');
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === editRulesModal) {
+                editRulesModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
